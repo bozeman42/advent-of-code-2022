@@ -3,19 +3,19 @@ const { readInput } = require('../util')
 
 const inputString = readInput(path.resolve(__dirname, 'input.txt')).trim()
 
+console.time('day 7')
+
 const terminalOutput = inputString.split('\n')
 
-function parseTerminal(terminal) {
+function buildFileSystem(terminal) {
     const terminalArray = [...terminal].reverse()
     console.log(terminalArray)
     let fileSystem = {}
     let treePosition = []
     while (terminalArray.length) {
         let line = terminalArray.pop().split(' ')
-        console.log(line)
         if (line[0] === '$') {
             if (line[1] === 'cd') {
-                // console.log('cd', line[2])
                 switch (line[2]) {
                     case '/':
                         treePosition = []
@@ -24,7 +24,6 @@ function parseTerminal(terminal) {
                         treePosition.pop()
                         break
                     default:
-                        // console.log('moving to directory', line[2])
                         treePosition.push(line[2])
                 }
             }
@@ -42,7 +41,7 @@ function parseTerminal(terminal) {
             }
         }
     }
-    console.log(fileSystem)
+    return fileSystem
 }
 
 function getCurrentDirectory(fileSystem, directoryPath) {
@@ -51,4 +50,34 @@ function getCurrentDirectory(fileSystem, directoryPath) {
     }, fileSystem)
 }
 
-parseTerminal(terminalOutput)
+const fileSystem = buildFileSystem(terminalOutput)
+
+let directorySizes = {}
+
+function getDirectorySize(directory, name) {
+    const keys = Object.keys(directory)
+    const size = keys.reduce((size, key) => {
+        return (typeof directory[key] === 'number' ? directory[key] : getDirectorySize(directory[key], `${name}/${key}`)) + size
+    }, 0)
+    directorySizes[name] = size
+    return size
+}
+
+const size = getDirectorySize(fileSystem, '/')
+
+console.log(size)
+console.log(directorySizes)
+console.log(Object.values(directorySizes).filter(size => size <= 100000).reduce((a, b) => a + b))
+
+const totalSpace = 70000000
+const spaceNeeded = 30000000
+const freeSpace = totalSpace - directorySizes['/']
+
+const spaceToClear = spaceNeeded - freeSpace
+
+
+const smallestSufficientDirectory = Math.min(...Object.values(directorySizes).filter(size => size >= spaceToClear))
+
+console.log('Smallest sufficient directory size:', smallestSufficientDirectory)
+
+console.timeEnd('day 7')
