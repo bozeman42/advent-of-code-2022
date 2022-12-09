@@ -1,0 +1,11 @@
+{
+  "name": "advent-of-code-2022",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:bozeman42/advent-of-code-2022.git",
+  "author": "Aaron Kvarnlov-Leverty <bozeman42@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
