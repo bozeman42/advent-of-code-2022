@@ -1,6 +1,6 @@
 const canvas = document.getElementById('visualize')
 const ctx = canvas.getContext('2d')
-const WINDOW_SIZE = 245 * 3
+const WINDOW_SIZE = 350 * 3
 
 canvas.height = WINDOW_SIZE
 canvas.width = WINDOW_SIZE
@@ -28,13 +28,12 @@ let frame = 0
 function animate(data) {
     function animation(time) {
         const rope = data[frame]
-        console.log(data[frame])
         ctx.fillStyle = 'black'
         ctx.fillRect(0,0, WINDOW_SIZE, WINDOW_SIZE)
         ctx.fillStyle = 'white'
-        rope.forEach(segment => {
+        rope.forEach((segment, index) => {
             const [x, y] = segment
-            console.log(mapToCanvasSize(x), mapToCanvasSize(y))
+            ctx.fillStyle = index ? 'pink' : 'red' // worm...
             ctx.fillRect(mapToCanvasSize(x), mapToCanvasSize(y), SIZE, SIZE)
         })
         frame = frame < data.length - 2 ? frame + 1 : 0
